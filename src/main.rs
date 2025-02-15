@@ -70,6 +70,21 @@ fn sign_message(msg: &String, privatekey: &SecretKey ) -> secp256k1::ecdsa::Sign
 
 }
 
+fn verify_message(public_key: &PublicKey, msg: &String, signature: &Signature) -> bool{
+    //it would be simple 
+    // context -> take the msg(bytes) 
+    // then convert it into Message type then verify and return bool simpul
+    let secp = Secp256k1::new();
+
+    let bytes_msg = Sha256::digest(msg.as_bytes());
+
+    let msg = Message::from_digest_slice(&bytes_msg).expect("32 btyes msg req");
+ 
+ // so this will return ok success jsut need to check whether it return ok or not
+    secp.verify_ecdsa(&msg, signature, public_key).is_ok()
+
+}
+
 
 fn main() {
     // this will create a hasher instance
@@ -113,14 +128,9 @@ fn main() {
 
     println!("Signature: {:?}", signature);
 
+    let is_valid = verify_message(&public_key, &hardcoded_msg, &signature);
 
-
-    
-    
-
-
-
-
+    println!("is valid {}",is_valid);
 
 
 
